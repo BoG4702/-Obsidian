@@ -1,0 +1,75 @@
+/* Dashboard (modern) — Obsidian 1.6+
+ * Работает в Reading и Live Preview
+ * Используй cssclass: dashboard в YAML
+ */
+
+/* Базовые отступы страницы */
+.dashboard {
+  padding: 24px var(--size-4-6);
+}
+
+/* Всегда на полную ширину (даже при включённом Readable line length) */
+.dashboard.markdown-reading-view.is-readable-line-width .markdown-rendered,
+.dashboard.markdown-preview-view.is-readable-line-width .markdown-preview-section,
+.dashboard .markdown-rendered,
+.dashboard .markdown-preview-section {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Заголовок-баннер (опционально добавь <div class="db-title">) */
+.dashboard .db-title {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin: 0 0 16px 0;
+}
+
+/* ===== ГРИД КАРТОЧЕК =====
+   РЕКОМЕНДАЦИЯ: для контейнера используй <ul class="db-grid"> ... </ul>
+   Так мы не ломаем обычные списки, Dataview и Tasks.
+*/
+.dashboard .db-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--size-4-4);
+}
+
+/* Карточка */
+.dashboard .db-grid > li {
+  background: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-l);
+  box-shadow: var(--shadow-s);
+  padding: var(--size-4-4);
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-2-2);
+}
+
+/* Чуть приятнее взаимодействует с callout/Tasks/Dataview внутри карточек */
+.dashboard .db-grid > li .callout {
+  margin: 0;
+}
+.dashboard .db-grid > li .dataview,
+.dashboard .db-grid > li .dataview.table-view-table,
+.dashboard .db-grid > li .block-language-tasks {
+  margin: 0;
+}
+
+/* Скрыть «индикаторы отступов» внутри карточек,
+   чтобы не было вертикальных линий справа от галочек */
+.dashboard .db-grid > li .markdown-rendered.show-indentation-guide li > ul::before,
+.dashboard .db-grid > li .markdown-rendered.show-indentation-guide li > ol::before {
+  display: none;
+}
+
+/* Не искажать обычные списки/Dataview вне .db-grid */
+.dashboard ul.dataview {
+  list-style: disc;
+  row-gap: 0;
+}
