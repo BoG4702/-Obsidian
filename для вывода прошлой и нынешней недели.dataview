@@ -31,8 +31,9 @@ const rows = pages
 const latest   = rows.length ? rows[rows.length - 1] : null;   // последняя (максимальный номер)
 const previous = rows.length > 1 ? rows[rows.length - 2] : null;
 
-dv.header(3, "Текущая неделя");
-if (latest) dv.paragraph(`[[${latest.p.file.path}|${latest.p.file.name}]]`);
+dv.header(3, "Текущая и прошлая неделя");
+const curr = latest   ? `[[${latest.p.file.path}|${latest.p.file.name}]]`     : "_нет_";
+const prev = previous ? `[[${previous.p.file.path}|${previous.p.file.name}]]` : "_нет_";
 
-dv.header(3, "Прошлая неделя");
-if (previous) dv.paragraph(`[[${previous.p.file.path}|${previous.p.file.name}]]`);
+// одна строка
+dv.paragraph(`**Текущая:** ${curr}  |  **Прошлая:** ${prev}`);
