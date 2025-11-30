@@ -1,0 +1,38 @@
+// Папка с недельными файлами
+const FOLDER = "02 Расписания/Записи с неделями";
+
+// Берём только файлы, чьё имя начинается с "Неделя №", и СРАЗУ делаем обычный массив
+const pages = dv.pages(`"${FOLDER}"`)
+  .where(p => p.file.name.startsWith("Неделя №"))
+  .array();
+
+// Имя вида: Неделя № 3 (24.11.25 - 30.11.25)
+const RE = /Неделя №\s*(\d+)\s*\(\s*(\d{2})\.(\d{2})\.(\d{2})\s*[-–—]\s*(\d{2})\.(\d{2})\.(\d{2})\s*\)/;
+
+// dd.MM.yy -> Date (год считаем 20yy)
+const dmy = (dd, mm, yy) => new Date(2000 + +yy, +mm - 1, +dd);
+
+const rows = pages
+  .map(p => {
+    const m = p.file.name.match(RE);
+    if (!m) return null;
+    return {
+      p,
+      num: +m[1],                                       // номер недели
+      start: dmy(m[2], m[3], m[4]),
+      end:   new Date(2000 + +m[7], +m[6] - 1, +m[5], 23, 59, 59, 999)
+    };
+  })
+  .filter(Boolean)
+  // Сортируем ПО НОМЕРУ (№1 — самая ранняя, максимальный — «текущая/последняя»)
+  // на случай одинаковых номеров — доп. сравнение по дате начала
+  .sort((a, b) => (a.num !== b.num) ? (a.num - b.num) : (a.start - b.start));
+
+const latest   = rows.length ? rows[rows.length - 1] : null;   // последняя (максимальный номер)
+const previous = rows.length > 1 ? rows[rows.length - 2] : null;
+
+dv.header(3, "Текущая неделя");
+if (latest) dv.paragraph(`[[${latest.p.file.path}|${latest.p.file.name}]]`);
+
+dv.header(3, "Прошлая неделя");
+if (previous) dv.paragraph(`[[${previous.p.file.path}|${previous.p.file.name}]]`);
